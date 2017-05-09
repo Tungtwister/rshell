@@ -1,10 +1,14 @@
 #include "Semicolon.h"
 #include "Connector.h"
+#include "Base.h"
 
 // Constructors
-Semicolon::Semicolon() : Connector() {}
+Semicolon::Semicolon() : Connector() {
+    left = 0;
+    right = 0;
+}
 
-Semicolon::Semicolon(Base* left, Base* right) : Connector(left, right) {
+Semicolon::Semicolon(Base* left, Base* right) : Connector(left,right) {
     this->left = left;
     this->right = right;
 }
@@ -22,6 +26,7 @@ void Semicolon::setRight(Base* right) {
 // anything after the semicolon will execute no matter what
 // will return true
 bool Semicolon::execute() {
+    // cout << "semicolon execute" << endl;
     left->execute();
     right->execute();
     

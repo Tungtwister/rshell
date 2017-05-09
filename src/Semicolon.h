@@ -1,11 +1,11 @@
 #ifndef SEMICOLON_H
 #define SEMICOLON_H
 
+#include "Connector.h"
+#include "Base.h"
+
 class Semicolon : public Connector
 {
-    private:
-        Base* left;
-        Base* right;
     public:
         Semicolon();
         Semicolon(Base* left, Base* right);

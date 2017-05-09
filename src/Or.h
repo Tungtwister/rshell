@@ -1,11 +1,11 @@
 #ifndef OR_H
 #define OR_H
 
+#include "Connector.h"
+#include "Base.h"
+
 class Or : public Connector
 {
-    private:
-        Base* left;
-        Base* right;
     public:
         Or();
         Or(Base* left, Base* right);

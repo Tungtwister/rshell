@@ -21,7 +21,7 @@ class Cmd : public Base
         
         bool execute();
         
-        string getCmd();
+        string getData();
         
         // bool testExecute();
 

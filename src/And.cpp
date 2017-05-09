@@ -1,5 +1,6 @@
 #include "And.h"
 #include "Connector.h"
+#include "Base.h"
 
 // Constructors
 And::And() : Connector() {}

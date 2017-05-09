@@ -1,10 +1,11 @@
+#include <iostream>
 #include "Connector.h"
+#include "Base.h"
 
-Connector::Connector() 
-{
-    left = NULL;
-    right = NULL;
-}
+using namespace std;
+
+// Constructors
+Connector::Connector() { }
 
 Connector::Connector(Base* left, Base* right) 
 {

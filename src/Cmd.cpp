@@ -25,65 +25,76 @@ Cmd::Cmd(string command)
 }
 
 // returns command
-string Cmd::getCmd()
+string Cmd::getData() 
 {
     return command;
 }
 
 bool Cmd::execute() 
 {
-    
-    // Removing leading whitespace
-    if (command.at(0) == ' ') 
-    {
+    // get rid of whitespace
+    // cout << "command exec" << endl;
+    if (command.at(0) == ' ') {
         unsigned it = 0;
-        while (command.at(it) == ' ') 
-        {
+        while (command.at(it) == ' ') {
             it++;
         }
         command = command.substr(it);
     }
 
     // Removing trailing whitespace
-    if (command.at(command.size()-1) == ' ') 
-    {
+    if (command.at(command.size()-1) == ' ') {
         unsigned it = command.size()-1;
-        while (command.at(it) == ' ') 
-        {
+        while (command.at(it) == ' ') {
             it--;
         }
         command = command.substr(0, it+1);
     }
 
-    // Exit check
-    if (command == "exit") 
-    {
+    // check to see if exit is called
+    if (command == "exit")
         exit(0);
-    }
-    
+
+    // // Test Command Check
+    // if (command.at(0) == '[' && command.at(command.size() - 1) == ']') {
+    //     command.replace(0, 1, "test ");
+    //     command.erase(command.size() - 1);
+    // }
+
+    // if (command == "test" || command == "test ") {
+    //     cout << "(FALSE)" << endl;
+    //     return false;
+    // }
+    // else if (command.substr(0, 5) == "test ") {
+    //     return testEvaluate(); 
+    // }
+
     // Conversion to c string, creating char* vector
     char* cmd_cstr = (char*)this->command.c_str();
     vector<char*> arguments;
-    char* tmp_cstr;
-    tmp_cstr = strtok(cmd_cstr, " ");
-    while (tmp_cstr != NULL) {
-        if (tmp_cstr != '\0')
-            arguments.push_back(tmp_cstr);
+    char* p;
+    p = strtok(cmd_cstr, " ");
+    while (p != NULL) {
+        if (p != '\0')
+            arguments.push_back(p);
         
-        tmp_cstr = strtok(NULL, " ");
+        p = strtok(NULL, " ");
     }
+    // cout << "Arguments: " << endl;
+    // for (int i = 0; i < arguments.size(); ++i) {
+    //     cout << arguments.at(i) << endl;
+    // }
 
     // Char* array to be passed to execvp()
     char** args = new char*[arguments.size()+1];
 
-    for (unsigned i = 0; i < arguments.size(); i++) 
-    {
+    for (unsigned i = 0; i < arguments.size(); i++) {
         args[i] = arguments.at(i);
     }
     args[arguments.size()] = NULL;
 
     int status; // Create location in memory for which waitpid status info 
-                // is stored in
+                    // is stored in
     pid_t pid = fork(); // Fork() so execvp() doesn't quit program
 
     // If error with fork
@@ -93,10 +104,8 @@ bool Cmd::execute()
     }
 
     // Child process, calls execvp()
-    if (pid == 0) 
-    {
-        if (execvp(args[0], args) == -1) 
-        {
+    if (pid == 0) {
+        if (execvp(args[0], args) == -1) {
             perror("exec");
             exit(1);
         }
@@ -106,8 +115,7 @@ bool Cmd::execute()
     delete[] args;
 
     // Parent process
-    if (pid > 0) 
-    {
+    if (pid > 0) {
         waitpid(pid, &status, 0);
         if (status > 0) // If status returned, execvp failed
             return false;
@@ -118,7 +126,6 @@ bool Cmd::execute()
         
     }
 
-    // shouldn't get to here
+    // Shouldn't be hit
     return false;
-    
 }

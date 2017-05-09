@@ -1,11 +1,11 @@
 #ifndef AND_H
 #define AND_H
 
+#include "Connector.h"
+#include "Base.h"
+
 class And : public Connector
 {
-    private:
-        Base* left;
-        Base* right;
     public:
         And();
         And(Base* left, Base* right);
