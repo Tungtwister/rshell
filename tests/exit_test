@@ -1,0 +1,7 @@
+echo
+echo Beginning exit testing
+echo
+ls || exit #Should not exit
+pwd || exit #Should not exit
+echo one && echo two && exit #Should exit
+exit
