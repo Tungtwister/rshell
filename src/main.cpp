@@ -81,7 +81,7 @@ bool space(const string& userInput)
 void parse(string& userInput, Base*& inputs)
 {
     bool commentFound = false;
-    bool closingTest = false;
+    // bool closingTest = false;
     bool commandPushed = false;
 
     vector<char> connectors;
