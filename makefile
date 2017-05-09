@@ -1,6 +1,6 @@
 CC=g++
 CC_FLAGS=-Wall -Werror -ansi -pedantic -g
-PARAMS=main.o Cmd.o AND.o OR.o SemiColon.o
+PARAMS=main.o Cmd.o And.o Or.o Semicolon.o
 
 all: $(PARAMS)
 	mkdir -p ./bin
@@ -16,13 +16,13 @@ Cmd.o: src/Cmd.cpp
 Connector.o: src/Connector.cpp
 	$(CC) $(CC_FLAGS) src/Connector.cpp -c
 
-AND.o: src/AND.cpp
-	$(CC) $(CC_FLAGS) src/AND.cpp -c
+And.o: src/And.cpp
+	$(CC) $(CC_FLAGS) src/And.cpp -c
 
-OR.o: src/OR.cpp
-	$(CC) $(CC_FLAGS) src/OR.cpp -c
+Or.o: src/Or.cpp
+	$(CC) $(CC_FLAGS) src/Or.cpp -c
 
-Semicolon.o: src/SemiColon.cpp
+Semicolon.o: src/Semicolon.cpp
 	$(CC) $(CC_FLAGS) src/Semicolon.cpp -c
 
 clean:
