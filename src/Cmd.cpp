@@ -55,20 +55,6 @@ bool Cmd::execute()
     if (command == "exit")
         exit(0);
 
-    // // Test Command Check
-    // if (command.at(0) == '[' && command.at(command.size() - 1) == ']') {
-    //     command.replace(0, 1, "test ");
-    //     command.erase(command.size() - 1);
-    // }
-
-    // if (command == "test" || command == "test ") {
-    //     cout << "(FALSE)" << endl;
-    //     return false;
-    // }
-    // else if (command.substr(0, 5) == "test ") {
-    //     return testEvaluate(); 
-    // }
-
     // Conversion to c string, creating char* vector
     char* cmd_cstr = (char*)this->command.c_str();
     vector<char*> arguments;
