@@ -10,7 +10,7 @@ all: $(PARAMS)
 main.o: src/main.cpp
 	$(CC) $(CC_FLAGS) src/main.cpp -c
 
-Cmd.o: src/Command.cpp
+Cmd.o: src/Cmd.cpp
 	$(CC) $(CC_FLAGS) src/Cmd.cpp -c
 
 Connector.o: src/Connector.cpp
