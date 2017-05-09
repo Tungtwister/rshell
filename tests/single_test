@@ -1,0 +1,20 @@
+echo
+echo Begin single command tests
+echo
+ls -l
+echo
+echo "Echo does not remove quotation marks"
+echo
+echo Making a new directory: testdir
+mkdir testdir
+echo Running ls to show testdir
+ls -l
+echo Removing testdir
+rmdir testdir
+echo Running ls to show testdir removed
+ls -l
+echo
+ls -m
+echo
+echo Exiting now.
+exit
