@@ -1,0 +1,18 @@
+echo
+echo Begin commented commands test
+echo
+echo testing single command comments
+echo #dog
+echo not a comment #comment
+echo #echo
+ls #-1
+ls -1 #-a
+echo
+echo testing connected commands
+touch testfile && ls && echo #comment
+echo fish && pwd#echo wow
+#should do nothing
+Invalid || rm testfile # && mkdir Faildir
+echo
+echo Exiting now
+exit
