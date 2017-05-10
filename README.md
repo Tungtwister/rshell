@@ -70,7 +70,9 @@ exit.sh                #tests exit and commands with exit
 
 known bugs
 --------
-1. having a empty connector (ex: echo dog &&) cause the program to fail
-2. If the input contains an extra semicolon (ex: echo dog; echo cat;) the program with fail
+1. Having an empty command following a connector (ex: echo dog &&, echo dog ||) causes the program to fail
+2. If the input contains an extra semicolon (ex: echo dog; echo cat;) the program will fail
 3. The echo command does not support escape characters (e.g. '\n', '\t')
-4. The program does not register quotes
+4. The program does not ignore quotes (e.g. echo "cat")
+5. The program does not support parenthesis around command and argument (e.g. (echo dog && echo cat) || echo fish)
+6. The program handles left to right commands (e.g. echo dog || echo cat || echo fish) and outputs 'dog' and 'fish' , while in bash the example outputs 'dog' only. It does not handle echo dog || echo cat as the right failing and that carries on to the echo cat || echo fish, where echo fish would work since echo cat failed beforehand.
