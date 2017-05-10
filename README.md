@@ -75,3 +75,4 @@ known bugs
 3. The echo command does not support escape characters (e.g. '\n', '\t')
 4. The program does not ignore quotes (e.g. echo "cat")
 5. The program does not support parenthesis around command and argument (e.g. (echo dog && echo cat) || echo fish)
+6. The program handles left to right commands (e.g. echo dog || echo cat || echo fish) and outputs 'dog' and 'fish', while in bash the example outputs 'dog' only.
