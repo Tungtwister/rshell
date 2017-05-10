@@ -60,14 +60,15 @@ navigate to the tests/ directory, then enter the following command:
 ./<name_of_script>
 ```
 where <name_of_script> can be replaced by any of the scripts listed below:
+
 ```
 single_command.sh      #tests single commands
 multi_command.sh       #tests commands with connectors (&&, ||, and/or ;)
 commented_command.sh   #tests commands containing comments
 exit.sh                #tests exit and commands with exit
+```
 
-
-Known Bugs
+known bugs
 --------
 1. having a empty connector (ex: echo dog &&) cause the program to fail
 2. If the input contains an extra semicolon (ex: echo dog; echo cat;) the program with fail
