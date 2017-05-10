@@ -1,29 +1,28 @@
-CC=g++
-CC_FLAGS=-Wall -Werror -ansi -pedantic -g
-PARAMS=main.o Cmd.o AND.o OR.o SemiColon.o
+CC= g++
 
-all: $(PARAMS)
+CFLAGS = -Wall -Werror -ansi -pedantic
+
+all:
 	mkdir -p ./bin
-	$(CC) $(CC_FLAGS) $(PARAMS) -o ./bin/rshell
-	rm *o
+	$(CC) $(CFLAGS) ./src/main.cpp -o ./bin/rshell
 
-main.o: src/main.cpp
-	$(CC) $(CC_FLAGS) src/main.cpp -c
+main:
+	$(CC) $(CFLAGS) ./src/main.cpp
 
-Cmd.o: src/Command.cpp
-	$(CC) $(CC_FLAGS) src/Cmd.cpp -c
+Connector:
+	$(CC) $(CFLAGS) ./src/Connector.cpp
 
-Connector.o: src/Connector.cpp
-	$(CC) $(CC_FLAGS) src/Connector.cpp -c
+Cmd:
+	$(CC) $(CFLAGS) ./src/Cmd.cpp
 
-AND.o: src/AND.cpp
-	$(CC) $(CC_FLAGS) src/AND.cpp -c
+And:
+	$(CC) $(CFLAGS) ./src/And.cpp
 
-OR.o: src/OR.cpp
-	$(CC) $(CC_FLAGS) src/OR.cpp -c
+Or:
+	$(CC) $(CFLAGS) ./src/Or.cpp
 
-Semicolon.o: src/SemiColon.cpp
-	$(CC) $(CC_FLAGS) src/Semicolon.cpp -c
+Semicolon:
+	$(CC) $(CFLAGS) ./src/Semicolon.cpp
 
 clean:
-	rm -rf bin
+	rm -rf ./bin
