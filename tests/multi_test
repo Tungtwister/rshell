@@ -13,6 +13,12 @@ echo Single Semicolon:; echo This should print
 echo Double Semicolon:; echo Running ls; ls
 echo
 echo Testing multiple combinations:
+echo Semicolon, Semicolon:
+echo Test1; echo Test2; echo Test3
+echo AND, AND:
+ls && pwd && echo Test passed
+echo OR, OR:
+pwd || ls || echo Test passed
 echo OR, AND:
 invalid || pwd && echo Test passed
 echo AND, OR, OR:
@@ -22,7 +28,7 @@ echo Hello && echo world!; pwd && ls -m
 echo Semicolon, AND, OR:
 ls -a; pwd && echo Should print || echo Should not print
 echo Semicolon, OR, AND:
-echo Before semi; echo After semi || echo Should not print && echo Should print
+echo Before colon; echo After colon || echo Should not print && echo Should print
 echo
 echo Exiting now.
 exit
