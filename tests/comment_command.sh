@@ -1,3 +1,3 @@
 #!/bin/bash
 
-../bin/rshell < comment_test
+../bin/rshell < commented_test
