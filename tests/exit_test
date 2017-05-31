@@ -6,5 +6,6 @@ pwd || exit #Should not exit
 echo Testing exit with precedence and Test command
 test || (echo noExit || exit) #should not exit
 ((test && echo Print) && exit)#should not exit
-echo one && echo two && exit #Should exit
+echo one && echo two || exit #Should not exit
+(test || exit) #should exit
 exit
