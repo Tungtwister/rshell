@@ -24,5 +24,8 @@ Or:
 Semicolon:
 	$(CC) $(CFLAGS) ./src/Semicolon.cpp
 
+Parentheses:
+	$(CC) $(CFLAGS) ./src/Parentheses.cpp
+
 clean:
 	rm -rf ./bin
