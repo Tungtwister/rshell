@@ -37,7 +37,6 @@ To run rshell, enter these commands in the following order:
 ```
 $ git clone http://github.com/Tungtwister/rshell.git
 $ cd rshell
-$ git checkout hw3
 $ make
 $ bin/rshell
 
@@ -54,6 +53,25 @@ Connector Descriptions
    
 ; Connector: if a command is followed by this connector, then the next command 
    is always executed.
+
+Precedence
+--------
+Precedence using parenthese ( and ) allows commands to be run in specific orders as desired by the user.
+```
+example : (echo dog && echo cat) || (echo fish && echo rock)
+```
+Prints :
+dog
+cat
+
+While
+```
+echo dog && echo cat || echo fish && echo rock
+```
+Prints :
+dog
+cat
+rock
 
 Test Scripts
 --------
