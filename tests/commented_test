@@ -14,5 +14,10 @@ echo fish && pwd#echo wow
 #should do nothing
 Invalid || rm testfile # && mkdir Faildir
 echo
+echo Testing with precedence and Test command
+(echo A && echo B) || (echo C && echo D) #Should print A and B only
+(test -e ../src && echo "../src exists")#test command with &&
+((echo 1 && echo 2) || (echo 3 && echo 4)) #|| && ;
+(test || (echo Call ls && ls))#nested parentheses should run ls and echo call ls
 echo Exiting now
 exit
