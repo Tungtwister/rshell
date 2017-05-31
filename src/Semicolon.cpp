@@ -27,8 +27,13 @@ void Semicolon::setRight(Base* right) {
 // will return true
 bool Semicolon::execute() {
     // cout << "semicolon execute" << endl;
-    left->execute();
-    right->execute();
+    // if (left->execute() == NULL) {
+    //     right->execute();
+    // }
+    // else {
+        left->execute();
+        right->execute();
+    // }
     
     return true;
 }

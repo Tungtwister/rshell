@@ -31,5 +31,8 @@ bool Or::execute() {
             return false;
         }
     }
+    // if (!left->execute()) {
+    //     right->execute();
+    // }
     return false;
 }

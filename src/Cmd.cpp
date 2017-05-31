@@ -54,7 +54,26 @@ bool Cmd::execute()
     // check to see if exit is called
     if (command == "exit")
         exit(0);
+    
+    
+    // Check for test Command
+    if (command.at(0) == '[' && command.at(command.size() - 1) == ']') 
+    {
+        command.replace(0, 1, "test ");
+        command.erase(command.size() - 1);
+    }
 
+    if (command == "test" || command == "test ") 
+    {
+        cout << "(FALSE)" << endl;
+        return false;
+    }
+    else if (command.substr(0, 5) == "test ") 
+    {
+        return testEvaluate(); 
+    }
+    
+    
     // Conversion to c string, creating char* vector
     char* cmd_cstr = (char*)this->command.c_str();
     vector<char*> arguments;
@@ -114,4 +133,112 @@ bool Cmd::execute()
 
     // Shouldn't be hit
     return false;
+}
+
+
+// Helper that executes the test command
+bool Cmd::testEvaluate() 
+{
+    // clears test and trailing whitespace
+    if (command.size() > 4 && command.at(4) == ' ') 
+    {
+        unsigned i = 4;
+        while (i < command.size() && command.at(i) == ' ') 
+        {
+            i++;
+        }
+        if (i < command.size()) 
+        {
+            command = command.substr(i);   
+        }
+        else 
+        {
+            cout << "(FALSE)" << endl;
+            return false;
+        }
+    }
+
+    if (command.at(command.size() - 1) == ' ') 
+    {
+        unsigned i = command.size() - 1;    
+        while (command.at(i) == ' ') 
+        {
+            i--;
+        }
+        command = command.substr(0, i + 1);
+    }
+
+    string flag = command.substr(0, 2);
+
+    struct stat s;
+
+    // checks for a flag
+    if (flag.at(0) == '-') 
+    {
+        // Clears whitespace after the flag 
+        if (2 < command.size() && command.at(2) == ' ') 
+        {
+            unsigned i = 2;
+            while (i < command.size() && command.at(i) == ' ') 
+            {
+                i++;
+            }
+            command = command.substr(i);
+        }
+        
+        // Checks for a valid flag.
+        if (flag != "-f" && flag != "-d" && flag != "-e") 
+        {
+            string er = "Invalid flag passed into the test."; 
+            throw er;
+            return false;
+        }  
+
+        if (stat(command.c_str(), &s) == -1) 
+        {
+            cout << "(FALSE)" << endl;
+            return false;
+        }
+
+        // Flag is -f
+        if (flag == "-f") 
+        {
+            if (S_ISREG(s.st_mode)) 
+            {
+                cout << "(TRUE)" << endl;
+                return true;
+            }
+            cout << "(FALSE)" << endl;
+            return false;
+        }
+        // Flag is -d 
+        else if (flag == "-d") 
+        {
+            if (S_ISDIR(s.st_mode)) 
+            {
+                cout << "(TRUE)" << endl;
+                return true;
+            }
+            cout << "(FALSE)" << endl;
+            return false;
+        }
+        // Flag for -e
+        else if (flag == "-e") 
+        {
+            cout << "(TRUE)" << endl;
+            return true;
+            
+        }
+    }
+
+    // No flag
+    if (stat(command.c_str(), &s) == -1) 
+    {
+        cout << "(FALSE)" << endl;
+        return false;
+    }
+    
+    cout << "(TRUE)" << endl;
+    return true;
+    
 }
