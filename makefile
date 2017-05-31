@@ -16,7 +16,7 @@ Cmd.o: src/Cmd.cpp
 Connector.o: src/Connector.cpp
 	$(CC) $(CC_FLAGS) src/Connector.cpp -c
 
-And.o: src/AND.cpp
+And.o: src/And.cpp
 	$(CC) $(CC_FLAGS) src/And.cpp -c
 
 Or.o: src/OR.cpp
