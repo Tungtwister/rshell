@@ -35,10 +35,7 @@ Running rshell
 --------
 To run rshell, enter these commands in the following order:
 ```
-1. git clone https://github.com/snguy057/rshell.git
-2. cd rshell
-3. make
-4. ./bin/rshell
+
 ```
 You will now be able to run BASH commands using ***rshell***
 
