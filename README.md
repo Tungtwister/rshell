@@ -54,6 +54,25 @@ Connector Descriptions
 ; Connector: if a command is followed by this connector, then the next command 
    is always executed.
 
+Precedence
+--------
+Precedence using parenthese ( and ) allows commands to be run in specific orders as desired by the user.
+```
+example : (echo dog && echo cat) || (echo fish && echo rock)
+```
+Prints :
+dog
+cat
+
+While
+```
+echo dog && echo cat || echo fish && echo rock
+```
+Prints :
+dog
+cat
+rock
+
 Test Scripts
 --------
 Our project includes a series of test scripts designed to ensure proper 
