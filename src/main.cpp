@@ -255,7 +255,7 @@ void parse(string& userInput, Base*& inputs)
     // cout << "And: " << andCounter << endl;
     // cout << "Or: " << orCounter << endl;
     if (((semiCounter > 0 && (andCounter > 0 || orCounter > 0)) || semiCounter > 1) && connectors.back() == ';') {
-        cout << "remove semicolon" << endl;
+        // cout << "remove semicolon" << endl;
             connectors.pop_back();
         }
 
