@@ -12,11 +12,12 @@
 #include <stack>
 
 #include "Base.h"
-#include "Cmd.cpp"
-#include "Connector.cpp"
-#include "And.cpp"
-#include "Or.cpp"
-#include "Semicolon.cpp"
+#include "Cmd.h"
+#include "Connector.h"
+#include "And.h"
+#include "Or.h"
+#include "Semicolon.h"
+#include "Parentheses.h"
 
 using namespace std;
 
@@ -81,8 +82,11 @@ bool space(const string& userInput)
 void parse(string& userInput, Base*& inputs)
 {
     bool commentFound = false;
-    // bool closingTest = false;
     bool commandPushed = false;
+    bool bracketFound = false;
+    
+    int closePar = 0;
+    int openPar = 0;
 
     vector<char> connectors;
     vector<string> commands;
@@ -97,6 +101,18 @@ void parse(string& userInput, Base*& inputs)
             commentFound = true;
             userInput = userInput.substr(begin, i - begin);
         }
+        else if (userInput.at(i) == '(') { // checks for open parentheses
+            ++openPar;
+        }
+        else if (userInput.at(i) == ')') { // checks for close parentheses
+            ++closePar;
+        }
+    }
+    
+    string error = "Error. Parentheses do not match up."; // error messages
+    
+    if (openPar != closePar) { // throws an error if the open and close parentheses don't match up
+        throw error;
     }
     
     // to get rid of the whitespaces
@@ -119,13 +135,41 @@ void parse(string& userInput, Base*& inputs)
             }
             commandPushed = false;
         }
+        
+        else if (userInput.at(i) == '[') 
+        {
+            i++;
+            while (!bracketFound && i < userInput.size())
+            {
+                if (userInput.at(i) == ']') 
+                {
+                    bracketFound = true;
+                }
+                else {
+                    i++;
+                }
+            }
+            if (!bracketFound)
+            {
+                string s = "Error no closing ']' was found";
+                throw s;
+            }
+            bracketFound = false;
+        }
         // checking for the semicolon
         if (userInput.at(i) == ';') {
+            /* if i find a semicolon at the end of the user input then I need to 
+            push a blank string into commands so that it won't seg fault
+            */
             // cout << ";" << endl;
             connectors.push_back(userInput.at(i));
             commands.push_back(userInput.substr(begin, i - begin));
+            // if (userInput.at(i) == userInput.at(userInput.size() - 1) && userInput.at(userInput.size() - 1) == ';') {
+            //     commands.push_back("");
+            // }
             begin = i + 1;
             commandPushed = true;
+            
             // semicolon = true;
         }
         // checking for the && symbol and if there is an error if they added && with no right side
@@ -136,6 +180,23 @@ void parse(string& userInput, Base*& inputs)
                 commands.push_back(userInput.substr(begin, i - begin));
                 begin = i + 2;
                 commandPushed = true;
+            }
+        }
+        // checking for the ( symbol
+        else if (userInput.at(i) == '(') {
+            begin = i + 1; // increments to the first letter of the command following
+            connectors.push_back(userInput.at(i));
+        }
+        else if (userInput.at(i) == ')') {
+            connectors.push_back(userInput.at(i));
+            // begin = i + 1;  
+            string pushCmd = userInput.substr(begin, i - begin);
+            // empty string command
+            if (pushCmd != "") {
+                commandPushed = true;
+                // commands.push_back(userInput.substr(begin, i - begin));
+                commands.push_back(pushCmd);
+                begin = i + 1;
             }
         }
         // checking for the || symbol and if there is an error if they added || with no right side
@@ -153,10 +214,15 @@ void parse(string& userInput, Base*& inputs)
             commands.push_back(userInput.substr(begin, userInput.size()));
             // cout << "after no semicolon" << endl;
         }
+        else if (!connectors.empty() && !commands.empty() && i == userInput.size() - 1 && userInput.at(userInput.size() - 1) != ')') {
+            // cout << "if no semicolon" << endl;
+            commands.push_back(userInput.substr(begin, userInput.size()));
+            // cout << "after no semicolon" << endl;
+        }
     }
     
-    if (!connectors.empty() && connectors.back() == ';' && commands.back() == "") {
-        cout << "Empty string" << endl;
+    if (!connectors.empty() && (connectors.back() == ';' || connectors.back() == ')') && commands.back() == "") {
+        // cout << "Empty string" << endl;
         connectors.pop_back();
         commands.pop_back();
     }
@@ -187,6 +253,7 @@ void parse(string& userInput, Base*& inputs)
 
 void makeTree(Base*& inputs, vector<char>& connectors, vector<string>& commands)
 {
+    // cout << "goes into makeTree" << endl;
     
     // Remove empty commands
     for (unsigned i = 0; i < commands.size(); i++) {
@@ -195,9 +262,25 @@ void makeTree(Base*& inputs, vector<char>& connectors, vector<string>& commands)
         }
     }
     
+    // cout << "after for loop in makeTree" << endl;
+    
+    // ignores the () when checking for empty arguements.
+    // unsigned connectS = connectors.size();
+    // for (unsigned i = 0; i < connectors.size(); i++)
+    // {
+    //     cout << "no arguments within parentheses" << endl;
+    //     if (connectors.at(i) == '(' || connectors.at(i) == ')')
+    //     {
+    //         connectS--;
+    //     }
+    // }
+    
+    // cout << "austin help" << endl;
+    
     //if only one command with no connectors
     if(commands.size() == 1)
     {
+        // cout << "one command" << endl;
         Base* in = new Cmd(commands.at(0));
         inputs = in;
         in = 0;
@@ -213,6 +296,7 @@ void makeTree(Base*& inputs, vector<char>& connectors, vector<string>& commands)
 Base* makeTreeHelp(vector<char>& connectors, vector<string>& commands) 
 {
     // base case, returns a Command
+    // cout << "goes into makeTreeHelp" << endl;
     if (commands.size() == 1 && connectors.empty()) {
         // cout << "base case called" << endl;
         return new Cmd(commands.at(0));
@@ -269,6 +353,97 @@ Base* makeTreeHelp(vector<char>& connectors, vector<string>& commands)
         return con;
     }
     
-    // cout << "reaches" << endl;
+    // cout << "()" << endl;
+    if (connectors.back() == ')') {
+        // cout << "goes in parentheses" << endl;
+        stack<string> commandStack;
+        stack<char> connectorStack;
+        vector<char> copyConnector;
+        vector<string> copyCommand;
+        int counter = 1;
+        
+        connectors.pop_back();
+        
+        // if (connectors.back() == ')') {
+        //     commandStack.push(commands.back());
+        //     commands.pop_back();
+        // }
+        
+        // nested parentheses
+        while (counter != 0) {
+            //open parentheses
+            if (connectors.back() == '(') {
+                --counter;
+                connectorStack.push(connectors.back());
+                connectors.pop_back();
+            }
+            //close parentheses
+            else if (connectors.back() == ')') {
+                ++counter;
+                connectorStack.push(connectors.back());
+                connectors.pop_back();
+                if (connectors.back() == ')') {
+                    commandStack.push(commands.back());
+                    commands.pop_back();
+                }
+            }
+            //if no parentheses
+            else {
+                connectorStack.push(connectors.back());
+                connectors.pop_back();
+                if (connectors.back() != ')') {
+                    commandStack.push(commands.back());
+                    commands.pop_back();
+                }
+            }
+        }
+        // this removes an open parentheses '(' from the connector stack
+        connectorStack.pop();
+        
+        int connectorStackSize = connectorStack.size();
+        int commandStackSize = commandStack.size();
+        
+        // puts the elements of connector stack into the copy connector vector to be passed into the makeTreeHelp
+        // for (int i = 0; i < connectorStackSize; ++i) {
+        for (int i = connectorStackSize; i > 0; --i) {
+            copyConnector.push_back(connectorStack.top());
+            connectorStack.pop();
+        }
+        
+        // puts the elements of command stack into the copy command vector to be passed into the makeTreeHelp
+        // for (int j = 0; j < commandStackSize; ++j) {
+        for (int j = commandStackSize; j > 0; --j) {
+            copyCommand.push_back(commandStack.top());
+            commandStack.pop();
+        }
+        
+        // cout << "for copy connectors: " << endl;
+        // for(unsigned int i = 0; i < copyConnector.size(); ++i)
+        // {
+        // cout << copyConnector.at(i) << endl;
+        // }
+        // cout << "for copy commands: " << endl;
+        // for(unsigned int i = 0; i < copyCommand.size(); ++i)
+        // {
+        // cout << copyCommand.at(i) << endl;
+        // }
+        // cout << "Size of copy connectors: " << copyConnector.size() << endl;
+        // cout << "Size of copy commands: " << copyCommand.size() << endl;
+        
+        // Parentheses* con = new Parentheses(makeTreeHelp(copyConnector, copyCommand));
+        
+        Base* tree = makeTreeHelp(copyConnector, copyCommand);
+        
+        // tree = con;
+        
+        // while (!connectors.empty()) {
+        //     tree = makeTreeHelp(connectors, commands);
+        // }
+        cout << "return tree" << endl;
+        return tree;
+        
+    }
+    
+    // cout << "reaches end of maketree" << endl;
     return 0;
 }

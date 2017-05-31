@@ -28,9 +28,13 @@ bool And::execute() {
         if (right->execute()) {
             return true;
         }
+    // if (left->execute()) {
+    //     right->execute();
+    // }
         else {
             return false;
         }
     }
     return false;
+    // return true;
 }
