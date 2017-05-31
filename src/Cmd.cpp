@@ -70,7 +70,7 @@ bool Cmd::execute()
     }
     else if (command.substr(0, 5) == "test ") 
     {
-        return testEvaluate(); 
+        return testHelper(); 
     }
     
     
@@ -137,7 +137,7 @@ bool Cmd::execute()
 
 
 // Helper that executes the test command
-bool Cmd::testEvaluate() 
+bool Cmd::testHelper() 
 {
     // clears test and trailing whitespace
     if (command.size() > 4 && command.at(4) == ' ') 
@@ -222,7 +222,7 @@ bool Cmd::testEvaluate()
             cout << "(FALSE)" << endl;
             return false;
         }
-        // Flag for -e
+        // Flag is -e
         else if (flag == "-e") 
         {
             cout << "(TRUE)" << endl;
