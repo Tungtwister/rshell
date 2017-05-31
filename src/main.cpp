@@ -115,7 +115,7 @@ void parse(string& userInput, Base*& inputs)
         throw error;
     }
     
-    // to get rid of the whitespaces
+    // to get rid of the whitespaces at the end of the input
     if (userInput.at(userInput.size() - 1) == ' ') {
         unsigned i = userInput.size() - 1;
         while (userInput.at(i) == ' ') {
@@ -161,6 +161,7 @@ void parse(string& userInput, Base*& inputs)
             /* if i find a semicolon at the end of the user input then I need to 
             push a blank string into commands so that it won't seg fault
             */
+            //fixed semicolon problem
             // cout << ";" << endl;
             connectors.push_back(userInput.at(i));
             commands.push_back(userInput.substr(begin, i - begin));
@@ -193,7 +194,15 @@ void parse(string& userInput, Base*& inputs)
         }
         else if (userInput.at(i) == ')') {
             connectors.push_back(userInput.at(i));
-            // begin = i + 1;  
+            // cout << "userInput at begin: " << userInput.at(begin) << endl;
+            // cout << "userInput at begin++: " << userInput.at(begin + 1) << endl;
+            // cout << "userInput at begin + 2: " << userInput.at(begin + 2) << endl;
+            if (userInput.at(begin) == '|') {
+                begin = begin + 2;
+            }
+            if (userInput.at(begin) == '&') {
+                begin = begin + 2;
+            }
             string parenthesesCmd = userInput.substr(begin, i - begin);
             // empty string command
             if (parenthesesCmd != "") {
@@ -207,8 +216,10 @@ void parse(string& userInput, Base*& inputs)
         else if (userInput.at(i) == '|' && i < (userInput.size() - 1)) {
             if (userInput.at(i + 1) == '|') {
                 // cout << "|" << endl;
+                // begin = i + 2;
                 connectors.push_back(userInput.at(i));
                 string orCmd = userInput.substr(begin, i - begin);
+                // cout << orCmd << endl;
                 
                 // commands.push_back(userInput.substr(begin, i - begin));
                 
@@ -221,9 +232,25 @@ void parse(string& userInput, Base*& inputs)
         }
         else if (!connectors.empty() && !commands.empty() && i == userInput.size() - 1 && userInput.at(userInput.size() - 1) != ';') {
             // cout << "if no semicolon" << endl;
+            // begin++;
+            // cout << "userInput at 0: " << userInput.at(0) << endl;
+            // cout << "begin:" << begin << endl;
+            // cout << "userInput at begin: " << userInput.at(begin) << endl;
+            if (userInput.at(begin) == '|') {
+                begin = begin + 2;
+            }
+            if (userInput.at(begin) == '&') {
+                begin = begin + 2;
+            }
+            // cout << "userInput at begin++: " << userInput.at(begin) << endl;
             commands.push_back(userInput.substr(begin, userInput.size()));
             // cout << "after no semicolon" << endl;
         }
+        // else if (!connectors.empty() && !commands.empty() && i == userInput.size() - 1) {
+        //     cout << "end push" << endl;
+            
+        //     commands.push_back(userInput.substr(begin, userInput.size()));
+        // }
         // else if (!connectors.empty() && !commands.empty() && i == userInput.size() - 1 && userInput.at(userInput.size() - 1) != ')') {
         //     // cout << "if no semicolon" << endl;
         //     commands.push_back(userInput.substr(begin, userInput.size()));
@@ -237,6 +264,7 @@ void parse(string& userInput, Base*& inputs)
         commands.pop_back();
     }
     
+    // takes care of if the user input has a semicolon at the very end such as echo dog && echo cat;
     int semiCounter = 0;
     int andCounter = 0;
     int orCounter = 0;
