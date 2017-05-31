@@ -1,31 +1,14 @@
-CC= g++
+CC=g++
+CC_FLAGS= -g -Wall -ansi -Werror -pedantic
+# EXEC=bash
+SOURCES=$(wildcard *.cpp)
+OBJECTS=$(SOURCES:.cpp=.o)
 
-CFLAGS = -Wall -Werror -ansi -pedantic
+$(EXEC): $(OBJECTS)
+	$(CC) $(OBJECTS) -o $(EXEC)
 
-all:
-	mkdir -p ./bin
-	$(CC) $(CFLAGS) ./src/main.cpp -o ./bin/rshell
-
-main:
-	$(CC) $(CFLAGS) ./src/main.cpp
-
-Connector:
-	$(CC) $(CFLAGS) ./src/Connector.cpp
-
-Cmd:
-	$(CC) $(CFLAGS) ./src/Cmd.cpp
-
-And:
-	$(CC) $(CFLAGS) ./src/And.cpp
-
-Or:
-	$(CC) $(CFLAGS) ./src/Or.cpp
-
-Semicolon:
-	$(CC) $(CFLAGS) ./src/Semicolon.cpp
-
-Parentheses:
-	$(CC) $(CFLAGS) ./src/Parentheses.cpp
+%.o: %.cpp
+	$(CC) -c $(CC_FLAGS) $< -o $@
 
 clean:
-	rm -rf ./bin
+	rm -f $(EXEC) $(OBJECTS)
