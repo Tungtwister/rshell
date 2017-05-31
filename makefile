@@ -19,7 +19,7 @@ Connector.o: src/Connector.cpp
 And.o: src/And.cpp
 	$(CC) $(CC_FLAGS) src/And.cpp -c
 
-Or.o: src/OR.cpp
+Or.o: src/Or.cpp
 	$(CC) $(CC_FLAGS) src/Or.cpp -c
 
 Semicolon.o: src/Semicolon.cpp
