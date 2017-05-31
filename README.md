@@ -37,7 +37,6 @@ To run rshell, enter these commands in the following order:
 ```
 $ git clone http://github.com/Tungtwister/rshell.git
 $ cd rshell
-$ git checkout hw3
 $ make
 $ bin/rshell
 
