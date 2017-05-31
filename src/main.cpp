@@ -27,7 +27,7 @@ void parse(string&, Base*&);
 
 void makeTree(Base*&, vector<char>&, vector<string>&);
 
-Base* makeTreeHelp(vector<char>& connectors, vector<string>& commands);
+Base* makeTreeHelp(Base*& Dec, vector<char>& connectors, vector<string>& commands);
 
 int main()
 {
@@ -177,9 +177,13 @@ void parse(string& userInput, Base*& inputs)
             if (userInput.at(i + 1) == '&') {
                 // cout << "&" << endl;
                 connectors.push_back(userInput.at(i));
-                commands.push_back(userInput.substr(begin, i - begin));
-                begin = i + 2;
-                commandPushed = true;
+                string andCmd = userInput.substr(begin, i - begin);
+                if (andCmd != "") {
+                // commands.push_back(userInput.substr(begin, i - begin));
+                    commands.push_back(andCmd);
+                    begin = i + 2;
+                    commandPushed = true;
+                }
             }
         }
         // checking for the ( symbol
@@ -190,12 +194,12 @@ void parse(string& userInput, Base*& inputs)
         else if (userInput.at(i) == ')') {
             connectors.push_back(userInput.at(i));
             // begin = i + 1;  
-            string pushCmd = userInput.substr(begin, i - begin);
+            string parenthesesCmd = userInput.substr(begin, i - begin);
             // empty string command
-            if (pushCmd != "") {
+            if (parenthesesCmd != "") {
                 commandPushed = true;
                 // commands.push_back(userInput.substr(begin, i - begin));
-                commands.push_back(pushCmd);
+                commands.push_back(parenthesesCmd);
                 begin = i + 1;
             }
         }
@@ -204,9 +208,15 @@ void parse(string& userInput, Base*& inputs)
             if (userInput.at(i + 1) == '|') {
                 // cout << "|" << endl;
                 connectors.push_back(userInput.at(i));
-                commands.push_back(userInput.substr(begin, i - begin));
-                begin = i + 2;
-                commandPushed = true;
+                string orCmd = userInput.substr(begin, i - begin);
+                
+                // commands.push_back(userInput.substr(begin, i - begin));
+                
+                if (orCmd != "") {
+                    begin = i + 2;
+                    commandPushed = true;
+                    commands.push_back(orCmd);
+                }
             }
         }
         else if (!connectors.empty() && !commands.empty() && i == userInput.size() - 1 && userInput.at(userInput.size() - 1) != ';') {
@@ -214,11 +224,11 @@ void parse(string& userInput, Base*& inputs)
             commands.push_back(userInput.substr(begin, userInput.size()));
             // cout << "after no semicolon" << endl;
         }
-        else if (!connectors.empty() && !commands.empty() && i == userInput.size() - 1 && userInput.at(userInput.size() - 1) != ')') {
-            // cout << "if no semicolon" << endl;
-            commands.push_back(userInput.substr(begin, userInput.size()));
-            // cout << "after no semicolon" << endl;
-        }
+        // else if (!connectors.empty() && !commands.empty() && i == userInput.size() - 1 && userInput.at(userInput.size() - 1) != ')') {
+        //     // cout << "if no semicolon" << endl;
+        //     commands.push_back(userInput.substr(begin, userInput.size()));
+        //     // cout << "after no semicolon" << endl;
+        // }
     }
     
     if (!connectors.empty() && (connectors.back() == ';' || connectors.back() == ')') && commands.back() == "") {
@@ -226,6 +236,28 @@ void parse(string& userInput, Base*& inputs)
         connectors.pop_back();
         commands.pop_back();
     }
+    
+    int semiCounter = 0;
+    int andCounter = 0;
+    int orCounter = 0;
+    for (unsigned i = 0; i < connectors.size(); ++i) {
+        if (connectors.at(i) == ';') {
+            ++semiCounter;
+        }
+        if (connectors.at(i) == '&') {
+            ++andCounter;
+        }
+        if (connectors.at(i) == '|') {
+            ++orCounter;
+        }
+    }
+    // cout << "semi: " << semiCounter << endl;
+    // cout << "And: " << andCounter << endl;
+    // cout << "Or: " << orCounter << endl;
+    if (((semiCounter > 0 && (andCounter > 0 || orCounter > 0)) || semiCounter > 1) && connectors.back() == ';') {
+        cout << "remove semicolon" << endl;
+            connectors.pop_back();
+        }
 
     // for one command
     // if user inputs no connectors
@@ -233,9 +265,11 @@ void parse(string& userInput, Base*& inputs)
         commands.push_back(userInput.substr(begin, userInput.size() - begin));
     }
     
+    //testing purposes
     // cout << "for connectors: " << endl;
     // for(unsigned int i = 0; i < connectors.size(); ++i)
     // {
+        
     // cout << connectors.at(i) << endl;
     // }
     // cout << "for commands: " << endl;
@@ -274,8 +308,11 @@ void makeTree(Base*& inputs, vector<char>& connectors, vector<string>& commands)
     //         connectS--;
     //     }
     // }
+    // if (commands.size() <= connectS || commands.empty()) {
+    //     string error = "Error. No arguments passed into connector.";
+    //     throw error;
+    // }
     
-    // cout << "austin help" << endl;
     
     //if only one command with no connectors
     if(commands.size() == 1)
@@ -288,12 +325,20 @@ void makeTree(Base*& inputs, vector<char>& connectors, vector<string>& commands)
     }
     
     // cout << "helper called" << endl;
-    inputs = makeTreeHelp(connectors, commands);
+    Base* Dec = NULL;
+    
+    inputs = makeTreeHelp(Dec, connectors, commands);
+    
+    while(!connectors.empty())
+    {
+        Dec = inputs;
+        inputs = makeTreeHelp(Dec, connectors, commands);
+    }
     
     return;
 }
 
-Base* makeTreeHelp(vector<char>& connectors, vector<string>& commands) 
+Base* makeTreeHelp(Base*& Dec, vector<char>& connectors, vector<string>& commands) 
 {
     // base case, returns a Command
     // cout << "goes into makeTreeHelp" << endl;
@@ -301,6 +346,9 @@ Base* makeTreeHelp(vector<char>& connectors, vector<string>& commands)
         // cout << "base case called" << endl;
         return new Cmd(commands.at(0));
     }
+    // else if (commands.size() == 1 && connectors.size() == 1) {
+    //     return new Cmd(commands.at(0));
+    // }
     
     // builds the tree based on the connector type. in the end it returns the 
     // top node
@@ -311,16 +359,24 @@ Base* makeTreeHelp(vector<char>& connectors, vector<string>& commands)
         Semicolon* con = new Semicolon();
         
         // cout << "setRight before" << endl;
-        con->setRight(new Cmd(commands.back()));
-        // cout << "setright after" << endl;
-        commands.pop_back();
+        if (Dec == NULL) {
+            con->setRight(new Cmd(commands.back()));
+            // cout << "setright after" << endl;
+            commands.pop_back();
+        }
+        else {
+            con->setRight(Dec);
+            Dec = NULL;
+        }
         
         // cout << "setLeft before" << endl;
-        con->setLeft(makeTreeHelp(connectors, commands));
+        con->setLeft(makeTreeHelp(Dec, connectors, commands));
         // cout << "setLeft after" << endl;
         
+        
+        Dec = con;
         // returns top node
-        return con;
+        return Dec;
     }
 
     // cout << "and" << endl;
@@ -328,14 +384,21 @@ Base* makeTreeHelp(vector<char>& connectors, vector<string>& commands)
     {
         connectors.pop_back();
         And* con = new And();
+        if(Dec == NULL) {
+            con->setRight(new Cmd(commands.back()));
+            commands.pop_back();
+        }
+        else
+        {
+            con->setRight(Dec);
+            Dec = NULL;
+        }
         
-        con->setRight(new Cmd(commands.back()));
-        commands.pop_back();
-        
-        con->setLeft(makeTreeHelp(connectors, commands));
+        con->setLeft(makeTreeHelp(Dec, connectors, commands));
+        Dec = con;
         
         // returns top node
-        return con;
+        return Dec;
     }
     
     // cout << "or" << endl;
@@ -344,13 +407,20 @@ Base* makeTreeHelp(vector<char>& connectors, vector<string>& commands)
         connectors.pop_back();
         Or* con = new Or();
         
-        con->setRight(new Cmd(commands.back()));
-        commands.pop_back();
+        if (Dec == NULL) {
+            con->setRight(new Cmd(commands.back()));
+            commands.pop_back();
+        }
+        else {
+            con->setRight(Dec);
+            Dec = NULL;
+        }
         
-        con->setLeft(makeTreeHelp(connectors, commands));
+        con->setLeft(makeTreeHelp(Dec, connectors, commands));
+        Dec = con;
         
         // returns top node
-        return con;
+        return Dec;
     }
     
     // cout << "()" << endl;
@@ -364,10 +434,11 @@ Base* makeTreeHelp(vector<char>& connectors, vector<string>& commands)
         
         connectors.pop_back();
         
-        // if (connectors.back() == ')') {
-        //     commandStack.push(commands.back());
-        //     commands.pop_back();
-        // }
+        // the if statement is incase of nested parentheses
+        if (connectors.back() != ')') {
+            commandStack.push(commands.back());
+            commands.pop_back();
+        }
         
         // nested parentheses
         while (counter != 0) {
@@ -382,7 +453,7 @@ Base* makeTreeHelp(vector<char>& connectors, vector<string>& commands)
                 ++counter;
                 connectorStack.push(connectors.back());
                 connectors.pop_back();
-                if (connectors.back() == ')') {
+                if (connectors.back() != ')') {
                     commandStack.push(commands.back());
                     commands.pop_back();
                 }
@@ -400,19 +471,22 @@ Base* makeTreeHelp(vector<char>& connectors, vector<string>& commands)
         // this removes an open parentheses '(' from the connector stack
         connectorStack.pop();
         
+        // if (!commands.empty()) {
+        //     commandStack.push(commands.back());
+        //     commands.pop_back();
+        // }
+        
         int connectorStackSize = connectorStack.size();
         int commandStackSize = commandStack.size();
         
         // puts the elements of connector stack into the copy connector vector to be passed into the makeTreeHelp
-        // for (int i = 0; i < connectorStackSize; ++i) {
-        for (int i = connectorStackSize; i > 0; --i) {
+        for (int i = 0; i < connectorStackSize; ++i) {
             copyConnector.push_back(connectorStack.top());
             connectorStack.pop();
         }
         
         // puts the elements of command stack into the copy command vector to be passed into the makeTreeHelp
-        // for (int j = 0; j < commandStackSize; ++j) {
-        for (int j = commandStackSize; j > 0; --j) {
+        for (int j = 0; j < commandStackSize; ++j) {
             copyCommand.push_back(commandStack.top());
             commandStack.pop();
         }
@@ -430,17 +504,18 @@ Base* makeTreeHelp(vector<char>& connectors, vector<string>& commands)
         // cout << "Size of copy connectors: " << copyConnector.size() << endl;
         // cout << "Size of copy commands: " << copyCommand.size() << endl;
         
-        // Parentheses* con = new Parentheses(makeTreeHelp(copyConnector, copyCommand));
+        Parentheses* con = new Parentheses(makeTreeHelp(Dec, copyConnector, copyCommand));
         
-        Base* tree = makeTreeHelp(copyConnector, copyCommand);
+        // Base* tree = makeTreeHelp(copyConnector, copyCommand);
         
-        // tree = con;
+        Dec = con;
         
-        // while (!connectors.empty()) {
-        //     tree = makeTreeHelp(connectors, commands);
-        // }
-        cout << "return tree" << endl;
-        return tree;
+        while (!connectors.empty()) {
+            Dec = makeTreeHelp(Dec, connectors, commands);
+        }
+        
+        // cout << "return Dec" << endl;
+        return Dec;
         
     }
     
