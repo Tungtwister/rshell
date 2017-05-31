@@ -25,7 +25,7 @@ Or.o: src/Or.cpp
 Semicolon.o: src/Semicolon.cpp
 	$(CC) $(CC_FLAGS) src/Semicolon.cpp -c
 
-Parentheses.o: src/Paren.cpp
+Parentheses.o: src/Parentheses.cpp
 	$(CC) $(CC_FLAGS) src/Parentheses.cpp -c
 
 clean:
