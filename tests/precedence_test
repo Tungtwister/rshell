@@ -1,0 +1,24 @@
+echo Begin precedence testing
+echo
+echo Testing single enclosed commands
+(echo dog)
+(ls -1)
+echo
+echo Testing multiple enclosed commands
+(ls -1) && (echo dog)
+(echo Print) || (echo noPrint)
+(echo A && echo B)
+(echo C || echo D)
+(echo 1 && echo 2) || (echo 3 && echo 4)
+echo
+echo Testing nested parentheses
+((echo A && echo B) || ls)
+(echo 1) && ((echo print1 && echo print2) || echo noPrint)
+echo
+echo Testing enclosed Test commands
+(test -e ../src)
+(test -d ../header) || (echo "../header should not exist")
+(echo A) && (test -e DNE || (echo B && echo C))
+echo 
+echo Exiting now
+exit
