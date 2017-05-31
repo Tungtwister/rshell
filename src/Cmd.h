@@ -23,7 +23,7 @@ class Cmd : public Base
         
         string getData();
         
-        bool testEvaluate();
+        bool testHelper();
 };
 
 #endif
