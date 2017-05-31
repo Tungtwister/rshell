@@ -48,8 +48,10 @@ Connector Descriptions
 --------
 && Connector: if a command is followed by this connector, then the next command 
    executes only if the first one succeeds.
+   
 || Connector: if a command is followed by this connector, then the next command 
    executes only if the first one fails.
+   
 ; Connector: if a command is followed by this connector, then the next command 
    is always executed.
 
