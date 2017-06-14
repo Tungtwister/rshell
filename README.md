@@ -73,6 +73,22 @@ dog
 cat
 rock
 
+Redirection
+--------
+Redirection Operators <, >, >>, |, allow for contents of files or outputs 
+to be redirected into other commands or outputs.
+
+The command "<" allows for accepting inputs from various files
+
+The command ">" allows for outputting commands into files. If the target files does
+not exist it will create a the said file.
+
+The command ">>" works similarily to the ">" operator except when dealing with an
+existing file, it appends the output to the file instead of overwritting it.
+
+The command "|" uses the output of the previous command, as the input for the next command
+
+
 Test Scripts
 --------
 Our project includes a series of test scripts designed to ensure proper 
