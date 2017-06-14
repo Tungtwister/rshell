@@ -8,5 +8,7 @@ echo wow > file2
 chmod 711 file1
 chmod 711 file2
 cat < file1 >> file2
+rm file1
+rm file2
 exit
 
