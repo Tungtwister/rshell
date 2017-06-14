@@ -14,9 +14,4 @@ ls ../ > file1
 ps > file2
 rm file1
 rm file2
-echo Testing with <, >, >> redirection
-echo
-echo test1 > file1
-echo test2 > file2
-cat < file2 >> file2
 exit
