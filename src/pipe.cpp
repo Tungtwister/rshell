@@ -77,14 +77,14 @@ bool Pipe::execute()
     //overwrite standard output -- SAVE OUTPUT
     if (dup2(pipe1[1], 1) == -1) 
     {
-        perror("out dup2");
+        perror("dup2 out");
         return false;
     }
 
     //overwrite standard input -- SAVE INPUT
     if (dup2(pipe1[0], 0) == -1) 
     {
-        perror("in dup2");
+        perror("dup2 in");
         return false;
     }
 
@@ -94,7 +94,7 @@ bool Pipe::execute()
     //restore standard OUTPUT
     if (dup2(saveOut, 1) == -1) 
     {
-        perror("leftside restore");
+        perror("restore left");
         return false;
     }
 
@@ -147,17 +147,24 @@ bool Pipe::execute()
       
         if (dup2(saveIn, 0) == -1) 
         {
-            perror("rightside restore");
+            perror("restore right");
             return false;
         }  
         if (status > 0) // If status returned, execvp failed
             return false;
-        else if (WEXITSTATUS(status) == 0)  // Success
+        else if (WEXITSTATUS(status) == 0) // Success
+        {
+            // cout << "success" << endl;
             return true;
+        }
         else if (WEXITSTATUS(status) == 1)  // fail
+        {    
+            // cout << "fail" << endl;
             return false;
+        }
 
     }
     // Shouldn't be hit
+    // cout << "end of pipe" << endl;
     return false;
 }
