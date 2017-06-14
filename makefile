@@ -38,7 +38,7 @@ append.o: src/append.cpp
 	$(CC) $(CC_FLAGS) src/append.cpp -c
 	
 pipe.o: src/pipe.cpp
-	$(CC) $(CC_FLAGS) src/main.cpp -c
+	$(CC) $(CC_FLAGS) src/pipe.cpp -c
 
 clean:
 	rm -rf bin
