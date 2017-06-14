@@ -1,0 +1,22 @@
+echo
+echo Begin Tests for > redirection
+echo
+echo test1 > file1
+echo
+echo test2 > file2
+echo
+chmod 711 file1
+chmod 711 file2
+echo
+echo test3 > file1 #should change whole file
+echo
+ls ../ > file1
+ps > file2
+rm file1
+rm file2
+echo Testing with <, >, >> redirection
+echo
+echo test1 > file1
+echo test2 > file2
+cat < file2 >> file2
+exit
