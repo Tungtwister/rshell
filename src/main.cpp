@@ -18,6 +18,10 @@
 #include "Or.h"
 #include "Semicolon.h"
 #include "Parentheses.h"
+#include "append.h"
+#include "right.h"
+#include "left.h"
+#include "pipe.h"
 
 using namespace std;
 
@@ -230,6 +234,49 @@ void parse(string& userInput, Base*& inputs)
                 }
             }
         }
+        // Checks for the pipe connector
+        else if (userInput.at(i) == '|') {
+            // push 'p' for pipe since or connector is taken already
+            connectors.push_back('p');
+            string pipeCmd = userInput.substr(begin, i - begin);
+            if (pipeCmd != "") {
+                begin = i + 1;
+                commands.push_back(pipeCmd);
+            }
+        }
+        // checks for the input redirection < connector
+        else if (userInput.at(i) == '<') {
+            connectors.push_back(userInput.at(i));
+            string redirectionCmd = userInput.substr(begin, i - begin);
+            if (redirectionCmd != "") {
+                begin = i + 1;
+                commands.push_back(redirectionCmd);
+            }
+        }
+        // checks for the output redirection > connector and the >> connector
+        else if (userInput.at(i) == '>') {
+            // for the >> connector
+            if (userInput.at(i + 1) == '>') {
+                // d represents the >> connector
+                connectors.push_back('d');
+                string dOutputRedirectionCmd = userInput.substr(begin, i - begin);
+                if (dOutputRedirectionCmd != "") {
+                    begin = i + 2;
+                    commands.push_back(dOutputRedirectionCmd);
+                }
+            }
+            // for the > connector
+            else {
+                connectors.push_back(userInput.at(i));
+                string outputRedirectionCmd = userInput.substr(begin, i - begin);
+                if (outputRedirectionCmd != "") {
+                    begin = i + 1;
+                    commands.push_back(outputRedirectionCmd);
+                }
+            }
+            
+        }
+        
         else if (!connectors.empty() && !commands.empty() && i == userInput.size() - 1 && userInput.at(userInput.size() - 1) != ';') {
             // cout << "if no semicolon" << endl;
             // begin++;
@@ -545,6 +592,46 @@ Base* makeTreeHelp(Base*& Dec, vector<char>& connectors, vector<string>& command
         // cout << "return Dec" << endl;
         return Dec;
         
+    }
+    // cout << "<" << endl;
+    if (connectors.back() == '<') {
+        Left* l = new Left();
+        l->setRight(commands.back());
+        commands.pop_back();
+        connectors.pop_back();
+        l->setLeft(makeTreeHelp(Dec, connectors, commands));
+        Dec = l;
+        return Dec;
+    }
+    // cout << ">" << endl;
+    if (connectors.back() == '>') {
+        Right* r = new Right();
+        r->setRight(commands.back());
+        commands.pop_back();
+        connectors.pop_back();
+        r->setLeft(makeTreeHelp(Dec, connectors, commands));
+        Dec = r;
+        return Dec;
+    }
+    // cout << ">>" << endl;
+    if (connectors.back() == 'd') {
+        Append* a = new Append();
+        a->setRight(commands.back());
+        commands.pop_back();
+        connectors.pop_back();
+        a->setLeft(makeTreeHelp(Dec, connectors, commands));
+        Dec = a;
+        return Dec;
+    }
+    // cout << "|" << endl;
+    if (connectors.back() == 'p') {
+        Pipe* p = new Pipe();
+        p->setRight(commands.back());
+        commands.pop_back();
+        connectors.pop_back();
+        p->setLeft(makeTreeHelp(Dec, connectors, commands));
+        Dec = p;
+        return Dec;
     }
     
     // cout << "reaches end of maketree" << endl;
