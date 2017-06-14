@@ -114,4 +114,6 @@ known bugs
 2. The echo command does not support escape characters (e.g. '\n', '\t')
 3. The program does not ignore quotes (e.g. echo "cat")
 4. The program handles left to right commands (e.g. echo dog || echo cat || echo fish) and outputs 'dog' and 'fish' , while in bash the example outputs 'dog' only. It does not handle echo dog || echo cat as the right failing and that carries on to the echo cat || echo fish, where echo fish would work since echo cat failed beforehand
+5. Piping doesn't work as intented
+6. Certain instances of multiple redirection operators (<,>,>>,|) creates odd results
 
