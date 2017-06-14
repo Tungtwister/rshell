@@ -2,4 +2,5 @@ echo
 echo Begin Tests for <
 echo
 cat < And.cpp
+cat < Or.cpp
 exit
