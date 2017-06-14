@@ -1,0 +1,12 @@
+echo
+echo Begin Tests for >>
+echo
+echo test1 >> file1
+echo test2 >> file1
+echo test3 >> file1
+echo wow > file2
+chmod 711 file1
+chmod 711 file2
+cat < file1 >> file2
+exit
+
