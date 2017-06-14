@@ -217,7 +217,7 @@ void parse(string& userInput, Base*& inputs)
             }
         }
         // checking for the || symbol and if there is an error if they added || with no right side
-        else if (userInput.at(i) == '|' && i < (userInput.size() - 1)) {
+        else if (userInput.at(i) == '|' && i < (userInput.size() - 1) && userInput.at(i + 1) == '|') {
             if (userInput.at(i + 1) == '|') {
                 // cout << "|" << endl;
                 // begin = i + 2;
@@ -247,31 +247,33 @@ void parse(string& userInput, Base*& inputs)
         // checks for the input redirection < connector
         else if (userInput.at(i) == '<') {
             connectors.push_back(userInput.at(i));
-            string redirectionCmd = userInput.substr(begin, i - begin);
-            if (redirectionCmd != "") {
+            string lefty = userInput.substr(begin, i - begin);
+            if (lefty != "") {
                 begin = i + 1;
-                commands.push_back(redirectionCmd);
+                commands.push_back(lefty);
             }
         }
         // checks for the output redirection > connector and the >> connector
         else if (userInput.at(i) == '>') {
             // for the >> connector
             if (userInput.at(i + 1) == '>') {
-                // d represents the >> connector
-                connectors.push_back('d');
-                string dOutputRedirectionCmd = userInput.substr(begin, i - begin);
-                if (dOutputRedirectionCmd != "") {
+                // a represents the >> connector
+                connectors.push_back('a');
+                string appendCmd = userInput.substr(begin, i - begin);
+                if (appendCmd != "") {
                     begin = i + 2;
-                    commands.push_back(dOutputRedirectionCmd);
+                    commands.push_back(appendCmd);
                 }
             }
             // for the > connector
-            else {
+            // fixed the double read in with > and >>
+            else if (userInput.at(i - 1) != '>') {
                 connectors.push_back(userInput.at(i));
-                string outputRedirectionCmd = userInput.substr(begin, i - begin);
-                if (outputRedirectionCmd != "") {
+                string righty = userInput.substr(begin, i - begin);
+                if (righty != "") {
                     begin = i + 1;
-                    commands.push_back(outputRedirectionCmd);
+                    commands.push_back(righty);
+                    //commandPushed = true;
                 }
             }
             
@@ -614,13 +616,14 @@ Base* makeTreeHelp(Base*& Dec, vector<char>& connectors, vector<string>& command
         return Dec;
     }
     // cout << ">>" << endl;
-    if (connectors.back() == 'd') {
-        Append* a = new Append();
-        a->setRight(commands.back());
+    if (connectors.back() == 'a') {
+        // cout << "READ APPPEND" << endl;
+        Append* ap = new Append();
+        ap->setRight(commands.back());
         commands.pop_back();
         connectors.pop_back();
-        a->setLeft(makeTreeHelp(Dec, connectors, commands));
-        Dec = a;
+        ap->setLeft(makeTreeHelp(Dec, connectors, commands));
+        Dec = ap;
         return Dec;
     }
     // cout << "|" << endl;

@@ -21,20 +21,20 @@ bool Pipe::execute()
     
     // Removing leading whitespace
     if (right.at(0) == ' ') {
-        unsigned it = 0;
-        while (right.at(it) == ' ') {
-            it++;
+        unsigned i = 0;
+        while (right.at(i) == ' ') {
+            i++;
         }
-        right = right.substr(it);
+        right = right.substr(i);
     }
 
     // Removing trailing whitespace
     if (right.at(right.size()-1) == ' ') {
-        unsigned it = right.size()-1;
-        while (right.at(it) == ' ') {
-            it--;
+        unsigned i = right.size() - 1;
+        while (right.at(i) == ' ') {
+            i--;
         }
-        right = right.substr(0, it+1);
+        right = right.substr(0, i + 1);
     }
 
     // Conversion to c string, creating char* vector

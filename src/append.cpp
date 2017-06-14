@@ -29,7 +29,7 @@ bool Append::execute() {
     }
 
 	// saves stdinput buffer
-	int save = dup(0);
+	int save = dup(1);
 	
 	// Opens file for input
 	int file = open(right.c_str(), O_CREAT|O_APPEND|O_RDWR);
@@ -42,15 +42,15 @@ bool Append::execute() {
 	}
 
 	// closes previous input
-	close(0);
-	dup2(file, 0);
+	close(1);
+	dup2(file, 1);
 
 	// execute left command
 	bool wow = left->execute();
 
 	// Restore std output conditions
-	close(0);
-	dup2(save, 0);
+	close(1);
+	dup2(save, 1);
 	
 	return wow;
 }
