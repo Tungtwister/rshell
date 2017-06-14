@@ -1,0 +1,16 @@
+echo 
+echo Beginning pipe tests
+echo
+echo test1 > file1
+chmod 711 file1
+cat < file1
+cat < file1 | tr a-z A-Z
+cat < file1 | tr a-z A-Z > file2
+chmod 711 file2
+cat < file2 
+cat < file1 | tr a-z A-Z | tee file2 | tr A-Z a-z > file3
+cat < file1 | tee file3
+chmod 711 file3
+cat < file3
+rm file1 file2 file3
+exit
